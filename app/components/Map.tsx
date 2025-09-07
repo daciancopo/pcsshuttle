@@ -78,12 +78,12 @@ const GoogleMapComponent = ({ center, zoom }: { center: google.maps.LatLngLitera
 
 // Loading component
 const MapLoading = () => (
-  <div className="w-full h-full bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 rounded-2xl flex items-center justify-center">
+  <div className="w-full h-full bg-background rounded-2xl flex items-center justify-center">
     <div className="text-center">
-      <div className="text-6xl mb-4 animate-bounce">🗺️</div>
-      <p className="text-gray-700 font-medium text-lg">Se încarcă Harta Interactivă...</p>
+      <div className="text-5xl md:text-6xl mb-4">🗺️</div>
+      <p className="text-foreground/80 font-medium text-base md:text-lg">Se încarcă Harta Interactivă...</p>
       <div className="mt-4 flex justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
       </div>
     </div>
   </div>
@@ -91,19 +91,31 @@ const MapLoading = () => (
 
 // Error component
 const MapError = () => (
-  <div className="w-full h-full bg-gradient-to-br from-red-100 to-orange-100 rounded-2xl flex items-center justify-center">
+  <div className="w-full h-full bg-background rounded-2xl flex items-center justify-center">
     <div className="text-center">
-      <div className="text-6xl mb-4">❌</div>
-      <p className="text-gray-700 font-medium text-lg">Eroare la Încărcarea Hărții</p>
-      <p className="text-gray-500 mt-2">Te rugăm să verifici conexiunea la internet</p>
+      <div className="text-5xl md:text-6xl mb-4">❌</div>
+      <p className="text-foreground font-semibold text-base md:text-lg">Eroare la Încărcarea Hărții</p>
+      <p className="text-foreground/70 mt-2">Te rugăm să verifici conexiunea la internet</p>
     </div>
   </div>
 );
 
+/**
+ * Map section: Google Maps wrapper with custom marker, loading, and error states.
+ * Uses @googlemaps/react-wrapper and adheres to accessible, high-contrast UI.
+ */
 const Map = () => {
   // Default location (you can change these coordinates to your actual location)
   const center = { lat: 40.7128, lng: -74.0060 }; // New York City coordinates
   const zoom = 15;
+  
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY_HERE';
+
+  // Dev warning if API key is missing or placeholder
+  if (process.env.NODE_ENV !== 'production' && (!apiKey || apiKey === 'YOUR_API_KEY_HERE')) {
+    // eslint-disable-next-line no-console
+    console.warn('[Map] NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is missing or using placeholder. Map may fail to load in production.');
+  }
   
   const render = (status: Status) => {
     switch (status) {
@@ -117,76 +129,64 @@ const Map = () => {
   };
 
   return (
-    <section id="location" className="py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-10 text-4xl animate-float opacity-20">🚛</div>
-        <div className="absolute top-32 right-20 text-3xl animate-float-delayed opacity-20">📍</div>
-        <div className="absolute bottom-20 left-1/4 text-5xl animate-float opacity-10">🗺️</div>
-        <div className="absolute bottom-32 right-10 text-3xl animate-float-delayed opacity-20">🌟</div>
-      </div>
-      
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4 animate-gradient">
-            🗺️ Găsește-ne
-          </h2>
-          <p className="text-xl text-gray-700 font-medium">Vizitează sediul nostru sau contactează-ne pentru servicii de ridicare ✨</p>
+    <section id="location" className="w-full relative isolate bg-background overflow-hidden min-h-[80svh] md:min-h-[85svh] flex items-center py-20 md:py-24">
+      <div className="container relative">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-4">Găsește-ne</h2>
+          <p className="text-base sm:text-lg md:text-xl text-foreground/70 font-medium">Vizitează sediul nostru sau contactează-ne pentru servicii de ridicare</p>
         </div>
         
-        <div className="grid lg:grid-cols-2 gap-8">
-          <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-white/20 hover:shadow-2xl transition-all duration-300">
-            <h3 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              📞 Informații de Contact
-            </h3>
+        <div className="grid items-stretch lg:grid-cols-2 gap-6 md:gap-8">
+          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-border h-full flex flex-col">
+            <h3 className="text-2xl font-semibold mb-6">Informații de Contact</h3>
             
-            <div className="space-y-6">
-              <div className="flex items-center p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl hover:from-blue-100 hover:to-purple-100 transition-all duration-300">
-                <div className="text-3xl mr-4 animate-bounce">📍</div>
+            <div className="space-y-4">
+              <div className="flex items-center p-4 rounded-xl border border-border">
+                <div className="text-2xl mr-3">📍</div>
                 <div>
-                  <p className="font-bold text-gray-800 text-lg">Companie</p>
-                  <p className="text-gray-600 font-medium">PERIAN CLAUDIU SORIN SRL</p>
+                  <p className="font-semibold text-foreground">Companie</p>
+                  <p className="text-foreground/70 font-medium">PERIAN CLAUDIU SORIN SRL</p>
                 </div>
               </div>
               
-              <div className="flex items-center p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl hover:from-green-100 hover:to-blue-100 transition-all duration-300">
-                <div className="text-3xl mr-4 animate-pulse">📞</div>
+              <div className="flex items-center p-4 rounded-xl border border-border">
+                <div className="text-2xl mr-3">📞</div>
                 <div>
-                  <p className="font-bold text-gray-800 text-lg">Telefon - Claudiu</p>
-                  <p className="text-gray-600 font-medium">+40 726 725 111</p>
+                  <p className="font-semibold text-foreground">Telefon - Claudiu</p>
+                  <p className="text-foreground/70 font-medium">+40 726 725 111</p>
                 </div>
               </div>
               
-              <div className="flex items-center p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl hover:from-green-100 hover:to-blue-100 transition-all duration-300">
-                <div className="text-3xl mr-4 animate-pulse">📞</div>
+              <div className="flex items-center p-4 rounded-xl border border-border">
+                <div className="text-2xl mr-3">📞</div>
                 <div>
-                  <p className="font-bold text-gray-800 text-lg">Telefon - Vlad</p>
-                  <p className="text-gray-600 font-medium">+40 725 723 432</p>
+                  <p className="font-semibold text-foreground">Telefon - Vlad</p>
+                  <p className="text-foreground/70 font-medium">+40 725 723 432</p>
                 </div>
               </div>
               
-              <div className="flex items-center p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl hover:from-purple-100 hover:to-pink-100 transition-all duration-300">
-                <div className="text-3xl mr-4 animate-bounce">✉️</div>
+              <div className="flex items-center p-4 rounded-xl border border-border">
+                <div className="text-2xl mr-3">✉️</div>
                 <div>
-                  <p className="font-bold text-gray-800 text-lg">Email</p>
-                  <p className="text-gray-600 font-medium">pcs.shutle@yahoo.com</p>
+                  <p className="font-semibold text-foreground">Email</p>
+                  <p className="text-foreground/70 font-medium">pcs.shutle@yahoo.com</p>
                 </div>
               </div>
               
-              <div className="flex items-center p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl hover:from-yellow-100 hover:to-orange-100 transition-all duration-300">
-                <div className="text-3xl mr-4 animate-pulse">🕒</div>
+              <div className="flex items-center p-4 rounded-xl border border-border">
+                <div className="text-2xl mr-3">🕒</div>
                 <div>
-                  <p className="font-bold text-gray-800 text-lg">Program de Lucru</p>
-                  <p className="text-gray-600 font-medium">Lun-Vin: 8:00 - 18:00</p>
-                  <p className="text-gray-600 font-medium">Sâm: 9:00 - 16:00</p>
+                  <p className="font-semibold text-foreground">Program de Lucru</p>
+                  <p className="text-foreground/70 font-medium">Lun-Vin: 8:00 - 18:00</p>
+                  <p className="text-foreground/70 font-medium">Sâm: 9:00 - 16:00</p>
                 </div>
               </div>
             </div>
           </div>
           
-          <div className="h-96 lg:h-auto bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-4 hover:shadow-2xl transition-all duration-300">
+          <div className="min-h-[22rem] sm:min-h-[24rem] lg:min-h-[28rem] h-full bg-white/80 dark:bg-white/5 backdrop-blur-sm rounded-2xl shadow-sm border border-border p-4">
             <Wrapper
-              apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY_HERE'}
+              apiKey={apiKey}
               render={render}
               libraries={['marker', 'places']}
             />
@@ -194,12 +194,12 @@ const Map = () => {
         </div>
         
         <div className="mt-12 text-center">
-          <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20 inline-block">
-            <p className="text-lg font-medium text-gray-700 mb-2">
-              🚛 <span className="font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Ai nevoie de indicații?</span> 🗺️
+          <div className="bg-background/60 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-border inline-block">
+            <p className="text-base font-medium text-foreground mb-1">
+              🚛 <span className="font-semibold">Ai nevoie de indicații?</span>
             </p>
-            <p className="text-gray-600">
-              Apasă pe marcatorul de pe hartă pentru mai multe detalii și opțiuni de navigare! ✨
+            <p className="text-foreground/70 text-sm md:text-base">
+              Apasă pe marcatorul de pe hartă pentru mai multe detalii și opțiuni de navigare.
             </p>
           </div>
         </div>

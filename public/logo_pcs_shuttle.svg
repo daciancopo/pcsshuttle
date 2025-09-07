@@ -1,0 +1,29 @@
+<svg width="720" height="360" viewBox="0 0 720 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PCS Shuttle logo">
+  <defs>
+    <style>
+      .pcs { font-family: 'Baloo 2','Baloo','Fredoka','Varela Round','Arial Rounded MT Bold',system-ui,sans-serif;
+             font-weight: 800; }
+      .shuttle { font-family: 'Manrope','Inter','Montserrat','SF Pro Display',system-ui,sans-serif;
+                 font-weight: 800; }
+    </style>
+  </defs>
+
+  <!-- Group centered with padding -->
+  <g transform="translate(60, 230)">
+    <!-- We fix a common width using textLength so Shuttle matches PCS from start of P to end of S -->
+    <!-- Adjust TEXT_LENGTH to tweak overall width without touching layout -->
+    <defs>
+      <linearGradient id="noop" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff"/></linearGradient>
+    </defs>
+
+    <!-- Target shared width in px -->
+    <!-- Increase/decrease textLength to change overall logo width -->
+    <!-- PCS line -->
+    <text class="pcs" x="0" y="0" font-size="180" fill="#f1b663"
+          textLength="560" lengthAdjust="spacing">PCS</text>
+
+    <!-- Shuttle line, perfectly matching PCS width -->
+    <text class="shuttle" x="0" y="68" font-size="96" fill="#ffffff"
+          textLength="560" lengthAdjust="spacingAndGlyphs">Shuttle</text>
+  </g>
+</svg>

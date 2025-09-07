@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 interface CarouselItem {
@@ -11,9 +11,16 @@ interface CarouselItem {
   type: 'image' | 'video';
 }
 
+/**
+ * Carousel
+ * - Client-side interactive gallery with autoplay and accessible controls
+ * - Performance: inline video playback on mobile and responsive Image sizes
+ */
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isInView, setIsInView] = useState(true);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   const mediaItems: CarouselItem[] = [
     {
@@ -326,18 +333,60 @@ const Carousel = () => {
     }
   ];
 
-  // Auto-play functionality
+  // Auto-play functionality with visibility, hover/focus pause, and reduced-motion respect
   useEffect(() => {
-    if (!isAutoPlaying) return;
-    
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex === mediaItems.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 4000);
+    let interval: ReturnType<typeof setInterval> | null = null;
 
-    return () => clearInterval(interval);
-  }, [currentIndex, isAutoPlaying, mediaItems.length]);
+    const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) {
+      setIsAutoPlaying(false);
+      return; // Do not autoplay when user prefers reduced motion
+    }
+
+    const tick = () => {
+      setCurrentIndex((prev) => (prev === mediaItems.length - 1 ? 0 : prev + 1));
+    };
+
+    const stop = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    };
+
+    const start = () => {
+      if (!isAutoPlaying || document.hidden || !isInView) return;
+      stop();
+      interval = setInterval(tick, 4000);
+    };
+
+    const onVisibility = () => {
+      stop();
+      start();
+    };
+
+    start();
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      stop();
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [isAutoPlaying, isInView, mediaItems.length]);
+
+  // Pause autoplay when section not in viewport
+  useEffect(() => {
+    if (!sectionRef.current || typeof IntersectionObserver === 'undefined') return;
+    const el = sectionRef.current;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        setIsInView(entry.isIntersecting);
+      },
+      { root: null, threshold: 0.25, rootMargin: '0px' }
+    );
+    observer.observe(el);
+    return () => observer.unobserve(el);
+  }, []);
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
@@ -358,119 +407,98 @@ const Carousel = () => {
   const currentItem = mediaItems[currentIndex];
 
   return (
-    <section id="gallery" className="py-20 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-r from-blue-300/20 to-purple-300/20 rounded-full animate-float"></div>
-        <div className="absolute top-1/2 -right-20 w-60 h-60 bg-gradient-to-r from-pink-300/20 to-yellow-300/20 rounded-full animate-float-delayed"></div>
-        <div className="absolute -bottom-10 left-1/3 w-32 h-32 bg-gradient-to-r from-green-300/20 to-blue-300/20 rounded-full animate-float"></div>
-      </div>
+    <section
+      id="gallery"
+      ref={sectionRef}
+      className="py-12 bg-background relative"
+      onMouseEnter={() => setIsAutoPlaying(false)}
+      onMouseLeave={() => setIsAutoPlaying(true)}
+      onFocusCapture={() => setIsAutoPlaying(false)}
+      onBlurCapture={() => setIsAutoPlaying(true)}
+    >
+      {/* Decorative background removed for simplicity */}
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-12">
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4 animate-gradient">
-            Our Fleet Gallery 🚛✨
-          </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Explore our modern and well-maintained vehicles through our interactive carousel
-          </p>
+      <div className="container relative">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-4 text-[#F1B663]">Galerie Flota</h2>
+          <p className="text-sm sm:text-sm md:text-xl text-foreground max-w-2xl mx-auto">Explorează vehiculele noastre moderne și bine întreținute.</p>
         </div>
         
         {/* Main Carousel Container */}
         <div className="relative max-w-4xl mx-auto">
-          <div className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-2xl bg-white">
+          <div className="relative h-96 md:h-[500px] rounded-2xl overflow-hidden shadow-sm bg-card border border-border">
             {/* Media Display */}
             <div className="relative w-full h-full">
               {currentItem.type === 'video' ? (
                 <video
                   src={currentItem.src}
-                  className="w-full h-full object-contain p-8"
+                  className="w-full h-full object-contain p-6"
                   controls
                   muted
+                  playsInline
                   autoPlay
                   loop
+                  preload="metadata"
                 />
               ) : (
                 <Image
                   src={currentItem.src}
                   alt={currentItem.alt}
                   fill
-                  className="object-contain p-8"
-                  priority
+                  className="object-contain p-6"
+                  sizes="(max-width: 768px) 100vw, 800px"
+                  priority={currentIndex === 0}
                 />
               )}
               
               {/* Overlay with title and description */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6">
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  {currentItem.title}
-                </h3>
-                <p className="text-gray-200 text-lg">
-                  {currentItem.description}
-                </p>
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-5">
+                <h3 className="text-lg md:text-xl font-semibold text-white mb-1">{currentItem.title}</h3>
+                <p className="text-white/85 text-sm md:text-base">{currentItem.description}</p>
               </div>
             </div>
             
             {/* Navigation Arrows */}
             <button
               onClick={goToPrevious}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110 group"
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-white/10 text-foreground p-3 rounded-full shadow-sm ring-1 ring-border hover:bg-white dark:hover:bg-white/20 transition group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               aria-label="Imaginea anterioară"
             >
-              <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 md:w-6 md:h-6 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             
             <button
               onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110 group"
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-white/10 text-foreground p-3 rounded-full shadow-sm ring-1 ring-border hover:bg-white dark:hover:bg-white/20 transition group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               aria-label="Imaginea următoare"
             >
-              <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 md:w-6 md:h-6 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
           </div>
           
           {/* Dots Indicator */}
-           <div className="flex justify-center mt-6 space-x-3">
-             {mediaItems.map((item, index) => (
-               <button
-                 key={index}
-                 onClick={() => goToSlide(index)}
-                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                   index === currentIndex
-                     ? 'bg-blue-600 scale-125'
-                     : 'bg-gray-300 hover:bg-gray-400'
-                 }`}
-                 aria-label={`Mergi la ${item.type === 'image' ? 'imaginea' : 'videoul'} ${index + 1}: ${item.title}`}
-               />
-             ))}
-           </div>
+          <div className="flex justify-center mt-6 gap-3">
+            {mediaItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all ${
+                  index === currentIndex ? 'bg-accent scale-110' : 'bg-border hover:bg-foreground/30'
+                }`}
+                aria-label={`Mergi la ${item.type === 'image' ? 'imaginea' : 'videoul'} ${index + 1}: ${item.title}`}
+              />
+            ))}
+          </div>
           
           {/* Auto-play indicator */}
           <div className="flex justify-center mt-4">
-            <div className="flex items-center space-x-2 text-sm text-gray-500">
-              <div className={`w-2 h-2 rounded-full ${
-                isAutoPlaying ? 'bg-green-400 animate-pulse' : 'bg-gray-400'
-              }`}></div>
-              <span>{isAutoPlaying ? 'Redare automată' : 'Întrerupt'}</span>
-            </div>
-          </div>
-        </div>
-        
-        {/* Additional Info */}
-        <div className="text-center mt-12">
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 max-w-2xl mx-auto shadow-lg">
-            <p className="text-gray-600 mb-4">
-              🚀 <strong>Galerie Interactivă:</strong> Apasă săgețile sau punctele pentru navigare, redare automată la fiecare 4 secunde
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
-              <span>📱 Compatibil Mobil</span>
-              <span>⚡ Încărcare Rapidă</span>
-              <span>🎨 Design Modern</span>
-              <span>♿ Accesibil</span>
+            <div className="flex items-center gap-2 text-xs text-foreground/60">
+              <div className={`w-2 h-2 rounded-full ${isAutoPlaying && isInView ? 'bg-green-500' : 'bg-foreground/40'}`} />
+              <span>{isAutoPlaying && isInView ? 'Redare automată' : 'Întrerupt'}</span>
             </div>
           </div>
         </div>
