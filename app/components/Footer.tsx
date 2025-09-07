@@ -1,64 +1,74 @@
+// Architectural notes:
+// - Mobile-first column layout that enhances to grid on md+.
+// - Dark theme with subtle borders and neutral text for readability.
+// - Performance: removed heavy gradients/animations; commented out decorative elements.
+// - Accessibility: explicit headings hierarchy and focus states for links.
+
+import Link from 'next/link'
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-br from-purple-800 via-pink-700 to-orange-600 text-white py-16 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-yellow-300 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-10 right-10 w-24 h-24 bg-pink-300 rounded-full animate-bounce"></div>
-        <div className="absolute top-1/2 left-1/3 w-20 h-20 bg-purple-300 rounded-full animate-ping"></div>
-      </div>
-      
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid md:grid-cols-4 gap-10">
-          <div className="text-center md:text-left">
-            <h3 className="text-3xl font-black mb-6 bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
-              🚚 PCS Transport
-            </h3>
-            <p className="text-black text-lg font-medium leading-relaxed">
-              PERIAN CLAUDIU SORIN SRL - Partenerul tău de încredere pentru servicii profesionale de transport. Ore suplimentare la 50 lei/oră cu opțiuni flexibile de plată! ✨
-            </p>
-          </div>
-          
-          <div>
-            <h4 className="text-2xl font-black mb-6 text-yellow-300">🚛 Servicii</h4>
-            <ul className="space-y-3 text-lg font-medium">
-              <li className="hover:text-yellow-300 transition-colors cursor-pointer transform hover:scale-105 duration-300">🚐 Transport Pasageri</li>
-              <li className="hover:text-yellow-300 transition-colors cursor-pointer transform hover:scale-105 duration-300">🛣️ Călătorii pe Distanțe Lungi</li>
-              <li className="hover:text-yellow-300 transition-colors cursor-pointer transform hover:scale-105 duration-300">📦 Servicii de Marfă</li>
-              <li className="hover:text-yellow-300 transition-colors cursor-pointer transform hover:scale-105 duration-300">💳 Plată Flexibilă</li>
-              <li className="hover:text-yellow-300 transition-colors cursor-pointer transform hover:scale-105 duration-300">⏰ Ore Suplimentare (50 lei/h)</li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="text-2xl font-black mb-6 text-pink-300">🔗 Link-uri Rapide</h4>
-            <ul className="space-y-3 text-lg font-medium">
-              <li><a href="#about" className="hover:text-pink-300 transition-all duration-300 transform hover:scale-105 inline-block">🎯 Despre Noi</a></li>
-              <li><a href="#services" className="hover:text-pink-300 transition-all duration-300 transform hover:scale-105 inline-block">💼 Servicii & Prețuri</a></li>
-              <li><a href="#gallery" className="hover:text-pink-300 transition-all duration-300 transform hover:scale-105 inline-block">📸 Flota Noastră</a></li>
-              <li><a href="#location" className="hover:text-pink-300 transition-all duration-300 transform hover:scale-105 inline-block">📍 Locație</a></li>
-              <li><a href="#contact" className="hover:text-pink-300 transition-all duration-300 transform hover:scale-105 inline-block">💬 Solicită Ofertă</a></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="text-2xl font-black mb-6 text-orange-300">📞 Informații Contact</h4>
-            <div className="space-y-3 text-lg font-medium">
-              <p className="hover:text-orange-300 transition-colors cursor-pointer transform hover:scale-105 duration-300">📞 Claudiu: +40 726 725 111</p>
-              <p className="hover:text-orange-300 transition-colors cursor-pointer transform hover:scale-105 duration-300">📞 Vlad: +40 725 723 432</p>
-              <p className="hover:text-orange-300 transition-colors cursor-pointer transform hover:scale-105 duration-300">✉️ pcs.shutle@yahoo.com</p>
-              <p className="hover:text-orange-300 transition-colors cursor-pointer transform hover:scale-105 duration-300">🏢 PERIAN CLAUDIU SORIN SRL</p>
+    <footer className="relative isolate bg-background text-foreground py-14 sm:py-16 pb-[calc(env(safe-area-inset-bottom)+4.5rem)] md:pb-16 overflow-hidden">
+      {/* Mobile bottom navigation (app-like) */}
+      <nav
+        aria-label="Navigație mobilă"
+        className="fixed inset-x-0 bottom-0 z-50 md:hidden bg-[#1e1919] supports-[backdrop-filter]:bg-background/70 border-t border-[#ecba9f]"
+      >
+        <div className="container px-4 py-3 [padding-bottom:calc(env(safe-area-inset-bottom)+0.5rem)]">
+          <ul className="flex items-center justify-between gap-4">
+            <li>
+              <Link href="/" className="flex flex-col items-center gap-1 text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 rounded">
+                <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5"><path fill="currentColor" d="M12 3l9 8h-3v9h-5v-6H11v6H6v-9H3z" /></svg>
+                <span>Acasă</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="flex flex-col items-center gap-1 text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 rounded">
+                <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5"><path fill="currentColor" d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.33 0-8 1.94-8 4.33V21h16v-2.67C20 15.94 16.33 14 12 14z"/></svg>
+                <span>Despre</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/services" className="flex flex-col items-center gap-1 text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 rounded">
+                <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5"><path fill="currentColor" d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/></svg>
+                <span>Servicii</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/gallery" className="flex flex-col items-center gap-1 text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 rounded">
+                <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5"><path fill="currentColor" d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14l4-4 4 4 4-4 6 6zM8.5 13A2.5 2.5 0 1 1 11 10.5 2.5 2.5 0 0 1 8.5 13z"/></svg>
+                <span>Galerie</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/location" className="flex flex-col items-center gap-1 text-xs font-medium text-foreground/80 hover:text-foreground transition-all duration-300 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 rounded">
+                <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5"><path fill="currentColor" d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5z"/></svg>
+                <span>Locație</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      {/* Footer content (all sizes) */}
+      <div className="container px-4 py-3 relative z-10">
+        {/* Centralized CTA container replacing redundant info */}
+        <div className="flex items-center justify-center">
+          <div className="rounded-2xl bg-foreground/[0.04] ring-1 ring-foreground/10 px-4 py-5 sm:px-6 sm:py-6">
+            <div className="flex flex-row flex-wrap items-center justify-center gap-3 sm:gap-4">
+              <Link href="/contact" className="btn btn-primary">
+                Contactează-ne
+              </Link>
+              <Link href="/location" className="btn btn-secondary">
+                Vezi locația
+              </Link>
             </div>
           </div>
         </div>
-        
-        <div className="border-t-4 border-gradient-to-r from-yellow-300 to-pink-300 mt-12 pt-8 text-center">
-          <div className="bg-white bg-opacity-10 rounded-2xl p-6 backdrop-blur-sm">
-            <p className="text-white text-lg font-black">
-              &copy; 2024 PCS Transport (PERIAN CLAUDIU SORIN SRL). Toate drepturile rezervate. ✨<br/>
-              <span className="text-yellow-300">Fiabil</span> • <span className="text-pink-300">Plată Flexibilă</span> • <span className="text-orange-300">Profesional</span> 🚀
-            </p>
-          </div>
+
+        <div className="w-full mt-10 border-t border-[#ecba9f] py-4 flex justify-center">
+          <p className="text-center text-sm text-[#ecba9f]">
+            © 2025 PCS Shuttle. Toate drepturile rezervate
+          </p>
         </div>
       </div>
     </footer>

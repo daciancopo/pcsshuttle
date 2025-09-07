@@ -1,0 +1,20 @@
+<svg width="640" height="240" viewBox="0 0 640 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PCS Shuttle logo">
+  <!-- culoare brand -->
+  <defs>
+    <style>
+      .pcs { font-family: 'Baloo 2','Baloo','Fredoka','Varela Round','Arial Rounded MT Bold',system-ui,sans-serif;
+             font-weight: 800; letter-spacing: 2px; }
+      .shuttle { font-family: 'Manrope','Inter','Montserrat','SF Pro Display',system-ui,sans-serif;
+                 font-weight: 700; letter-spacing: 0.5px; }
+    </style>
+  </defs>
+
+  <!-- Grup pentru scalare ușoară -->
+  <g transform="translate(20,170)">
+    <!-- PCS (cartoonish) -->
+    <text class="pcs" x="0" y="0" font-size="128" fill="#f1b663" dominant-baseline="alphabetic">PCS</text>
+
+    <!-- Shuttle (pro clean) -->
+    <text class="shuttle" x="330" y="-6" font-size="72" fill="#f1b663" dominant-baseline="alphabetic">Shuttle</text>
+  </g>
+</svg>
