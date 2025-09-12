@@ -138,7 +138,7 @@ const Contact = () => {
           <div className="text-center mt-8">
             <div className="card p-6 inline-block">
               <p className="text-foreground text-base font-medium">
-                Email: <span className="font-semibold">pcs.shutle@yahoo.com</span><br/>
+                Email: <span className="font-semibold">pcs.shuttle@yahoo.com</span><br/>
                 Telefon: <span className="font-semibold">+40 726 725 111</span> – Claudiu<br/>
                 Telefon: <span className="font-semibold">+40 725 723 432</span> – Vlad
               </p>
