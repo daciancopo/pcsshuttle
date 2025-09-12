@@ -118,7 +118,7 @@ const Services = () => {
                 <span className="text-2xl mr-2">📧</span>
                 <span className="font-semibold text-foreground">Email</span>
               </div>
-              <p className="text-lg font-semibold text-foreground">pcs.shutle@yahoo.com</p>
+              <p className="text-lg font-semibold text-foreground">pcs.shuttle@yahoo.com</p>
             </div>
           </div>
         </div>

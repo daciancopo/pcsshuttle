@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import About from './About';
 import Map from './Map';
 import Contact from './Contact';
@@ -10,8 +10,8 @@ import Services from './Services';
 // Subcomponents pentru modularitate și lizibilitate
 const DecorativeSpots = () => (
   <>
-    <span aria-hidden className="radial-spot -top-24 -left-24 hidden md:block animate-float" />
-    <span aria-hidden className="radial-spot bottom-[-10rem] right-[-10rem] hidden lg:block animate-float-delayed" />
+    <span aria-hidden="true" className="radial-spot -top-24 -left-24 hidden md:block animate-float" />
+    <span aria-hidden="true" className="radial-spot bottom-[-10rem] right-[-10rem] hidden lg:block animate-float-delayed" />
   </>
 );
 
@@ -38,7 +38,7 @@ const CTAButtons = () => (
       className="group btn btn-primary px-6 py-3 md:px-8 md:py-3.5 text-sm sm:text-base"
       aria-label="Solicită ofertă — mergi la pagina de contact"
     >
-      <span className="mr-2" aria-hidden>🚀</span>
+      <span className="mr-2" aria-hidden="true">🚀</span>
       Solicită ofertă
       <svg aria-hidden="true" className="ml-2 h-4 w-4 opacity-90 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M5 12h14" />
@@ -50,13 +50,13 @@ const CTAButtons = () => (
       className="btn btn-secondary px-6 py-3 md:px-8 md:py-3.5 text-sm sm:text-base"
       aria-label="Află mai mult — mergi la pagina Despre"
     >
-      <span className="mr-2" aria-hidden>💡</span>
+      <span className="mr-2" aria-hidden="true">💡</span>
       Află mai mult
     </Link>
   </div>
 );
 
-function MotionItem({ children, delayMs, reduceMotion, mounted, className = '' }: { children: React.ReactNode; delayMs: number; reduceMotion: boolean; mounted: boolean; className?: string }) {
+function MotionItem({ children, delayMs, reduceMotion, mounted, className = '' }: { children: ReactNode; delayMs: number; reduceMotion: boolean; mounted: boolean; className?: string }) {
   const base = reduceMotion ? '' : 'transform-gpu transition-all duration-700 ease-out will-change-transform';
   const hidden = reduceMotion ? '' : (mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2');
   return (

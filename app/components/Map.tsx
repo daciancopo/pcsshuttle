@@ -169,7 +169,7 @@ const Map = () => {
                 <div className="text-2xl mr-3">✉️</div>
                 <div>
                   <p className="font-semibold text-foreground">Email</p>
-                  <p className="text-foreground/70 font-medium">pcs.shutle@yahoo.com</p>
+                  <p className="text-foreground/70 font-medium">pcs.shuttle@yahoo.com</p>
                 </div>
               </div>
               

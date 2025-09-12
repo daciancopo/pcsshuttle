@@ -31,7 +31,7 @@ const About = () => {
           <div className="text-center p-8 rounded-2xl border border-border shadow-sm bg-white/80 dark:bg-white/5 backdrop-blur-sm h-full flex flex-col card">
             <div className="text-5xl md:text-6xl mb-6">⚡</div>
             <h3 className="text-2xl font-semibold mb-4">Echipă Profesională</h3>
-            <p className="text-base font-medium text-foreground/70">Contactează-ne la pcs.shutle@yahoo.com sau sună șoferii noștri profesioniști pentru asistență imediată. 🚀</p>
+            <p className="text-base font-medium text-foreground/70">Contactează-ne la pcs.shuttle@yahoo.com sau sună șoferii noștri profesioniști pentru asistență imediată. 🚀</p>
           </div>
         </div>
       </div>
