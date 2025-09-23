@@ -9,18 +9,40 @@ const Contact = () => {
     service: '',
     message: ''
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    setFeedback({ type: null, message: '' });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Mulțumim pentru mesajul tău! Te vom contacta în curând.');
+    setSubmitting(true);
+    setFeedback({ type: null, message: '' });
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error || 'Eroare la trimiterea mesajului.');
+      }
+      setFeedback({ type: 'success', message: 'Mesajul a fost trimis cu succes! Îți mulțumim.' });
+      setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err.message || 'A apărut o eroare neașteptată.' });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -129,10 +151,17 @@ const Contact = () => {
             
             <button
               type="submit"
-              className="w-full btn btn-primary px-6 py-4"
+              className="w-full btn btn-primary px-6 py-4 disabled:opacity-60"
+              disabled={submitting}
             >
-              Trimite Cererea de Ofertă
+              {submitting ? 'Se trimite...' : 'Trimite Cererea de Ofertă'}
             </button>
+
+            {feedback.type && (
+              <div className={`mt-4 text-sm ${feedback.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+                {feedback.message}
+              </div>
+            )}
           </form>
           
           <div className="text-center mt-8">
