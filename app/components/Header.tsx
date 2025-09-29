@@ -46,7 +46,7 @@ const Header = () => {
           <Link
             href="/contact"
             aria-label="Contactează-ne"
-            className={`md:hidden inline-flex mr-2 mt-2 justify-self-end items-center gap-2 rounded-full bg-[#F1B663] px-3 py-2 text-sm shadow-lg hover:shadow-md hover:-translate-y-2 active:translate-y-0 transition will-change-transform focus:outline-none focus-visible:ring-2 font-bold text-[#1E1919] ${quicksand.className}`}
+            className={`md:hidden inline-flex mr-2 mt-2 justify-self-end items-center gap-2 rounded-full bg-[#F1B663] px-3 py-2 text-xs shadow-lg hover:shadow-md hover:-translate-y-2 active:translate-y-0 transition will-change-transform focus:outline-none focus-visible:ring-2 font-bold text-[#1E1919] ${quicksand.className}`}
           >
             Contactează-ne
           </Link>
