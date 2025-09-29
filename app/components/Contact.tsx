@@ -20,6 +20,37 @@ const Contact = () => {
     setFeedback({ type: null, message: '' });
   };
 
+  // Formatăm telefonul: doar cifre și spațiere în blocuri (ex: +40 700 000 000)
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    const digits = raw.replace(/\D/g, '');
+
+    if (!digits) {
+      setFormData({ ...formData, phone: '' });
+      setFeedback({ type: null, message: '' });
+      return;
+    }
+
+    let formatted = '';
+    if (digits.startsWith('40') && digits.length > 2) {
+      const cc = digits.slice(0, 2);
+      const rest = digits.slice(2);
+      const restBlocks = rest.match(/.{1,3}/g) || [];
+      formatted = `+${cc}${restBlocks.length ? ' ' + restBlocks.join(' ') : ''}`;
+    } else {
+      const blocks = digits.match(/.{1,3}/g) || [];
+      if (blocks.length > 0) {
+        formatted = `+${blocks[0]}`;
+        if (blocks.length > 1) {
+          formatted += ' ' + blocks.slice(1).join(' ');
+        }
+      }
+    }
+
+    setFormData({ ...formData, phone: formatted });
+    setFeedback({ type: null, message: '' });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -106,7 +137,11 @@ const Contact = () => {
                   id="phone"
                   name="phone"
                   value={formData.phone}
-                  onChange={handleChange}
+                  onChange={handlePhoneChange}
+                  inputMode="tel"
+                  pattern="^[+0-9 ]+$"
+                  title="Include prefixul cu '+'; spațierea se aplică automat în blocuri"
+                  maxLength={15}
                   className="w-full px-4 py-3 rounded-xl border border-border bg-background/60 text-foreground placeholder:text-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent"
                   placeholder="+40 700 000 000"
                 />
@@ -124,11 +159,11 @@ const Contact = () => {
                   className="w-full px-4 py-3 rounded-xl border border-border bg-background/60 text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                 >
                   <option value="">Selectează un serviciu</option>
-                  <option value="local-delivery">Livrare Locală</option>
-                  <option value="long-distance">Transport pe Distanțe Lungi</option>
-                  <option value="freight">Servicii de Marfă</option>
-                  <option value="moving">Servicii de Mutare</option>
-                  <option value="other">Altele</option>
+                  <option value="Livrare Locală">Livrare Locală</option>
+                  <option value="Transport pe Distanțe Lungi">Transport pe Distanțe Lungi</option>
+                  <option value="Servicii de Marfă">Servicii de Marfă</option>
+                  <option value="Servicii de Mutare">Servicii de Mutare</option>
+                  <option value="Altele">Altele</option>
                 </select>
               </div>
             </div>

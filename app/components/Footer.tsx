@@ -50,22 +50,11 @@ const Footer = () => {
       </nav>
 
       {/* Footer content (all sizes) */}
-      <div className="container px-4 py-3 relative z-10">
+      <div className="w-full px-4 py-0 relative z-10">
         {/* Centralized CTA container replacing redundant info */}
-        <div className="flex items-center justify-center">
-          <div className="rounded-2xl bg-foreground/[0.04] ring-1 ring-foreground/10 px-4 py-5 sm:px-6 sm:py-6">
-            <div className="flex flex-row flex-wrap items-center justify-center gap-3 sm:gap-4">
-              <Link href="/contact" className="btn btn-primary">
-                Contactează-ne
-              </Link>
-              <Link href="/location" className="btn btn-secondary">
-                Vezi locația
-              </Link>
-            </div>
-          </div>
-        </div>
 
-        <div className="w-full mt-10 border-t border-[#ecba9f] py-4 flex justify-center">
+
+        <div className="w-full pt-5 pb-5 border-t border-[#ecba9f] flex justify-center">
           <p className="text-center text-sm text-[#ecba9f]">
             © 2025 PCS Shuttle. Toate drepturile rezervate
           </p>
